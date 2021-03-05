@@ -26,7 +26,7 @@ thanks = ["Thank you peko", "Thank you peko!", "Thank you peko~", "Arigatou peko
 sorrys = ["Sorry peko ; ;", "Sorry peko...", "G-Gomen peko.", "ごめんぺこ・・・"]
 insults = ["Bakatare ga!", "Bakatare ga!", "Bakatare ga!", "Bakatare ga!", "Anta wa baka nano?", "バカたれが！",
            "ばかたれが！", "あんたはバカなの？", "ぺっ", "Go peko yourself!",
-           "(Disgusting.)[https://streamable.com/6ntf2g]"]
+           "[Disgusting.](https://streamable.com/6ntf2g)"]
 loves = ["Thank you guys. Don't cheat on me, okay? [Peko~](https://streamable.com/8gagri)",
          "[Love you](https://streamable.com/dbzfxj) too peko!", "I love you too peko!", "Love you too peko~"]
 cutes = ["You're cute too peko!", "You're also cute peko!", "You're cute too peko~", "You're also cute peko~", "Ehehe", "あなたもかわいいぺこ！"]
