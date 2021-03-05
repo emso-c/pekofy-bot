@@ -15,7 +15,7 @@ reddit = praw.Reddit(client_id=credentials.client_id,
                      password=credentials.bot_pass,
                      user_agent=credentials.user_agent)
 subreddit_list = ['u_'+bot_name, 'u_'+author, 'hololive', 'VirtualYoutubers', 'Hololewd', 'okbuddyhololive',
-                  'goodanimemes', 'VtuberV8', 'Priconne']
+                  'goodanimemes', 'VtuberV8', 'Priconne', 'AmeliaWatson']
 subreddit = reddit.subreddit('+'.join(subreddit_list))
 keyphrase = '!pekofy'
 keyphrase_delete = '!unpekofy'
