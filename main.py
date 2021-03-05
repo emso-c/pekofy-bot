@@ -105,10 +105,6 @@ def already_replied_to(comment, reply):
                 print("ALREADY CONFUSED, CONTINUING...")  # lol
                 print("------------------------")
                 return True
-            if top_comment.body == replies.cursed_pekopasta:
-                print("ALREADY PEKOPASTA'D, CONTINUING...")
-                print("------------------------")
-                return True
             if top_comment.body in replies.insults and reply in replies.insults:
                 print("ALREADY INSULTED, CONTINUING...")
                 print("------------------------")
@@ -176,7 +172,7 @@ while 1:
                             reply_f(random.choice(replies.thanks), "Thanked", comment)
                         elif "love you" in comment.body.lower():
                             reply_f(random.choice(replies.loves), "Loved", comment)
-                        elif "cute" in comment.body.lower() or "adorable" in comment.body.lower():
+                        elif "cute" in comment.body.lower():
                             reply_f(random.choice(replies.cutes), "Cute'd", comment)
 
                         # negative feedback reply
@@ -250,9 +246,6 @@ while 1:
                 print('Reply: {}'.format(comment.parent().body))
                 comment.parent().delete()
                 print("------------------------")
-
-            if comment.body == "!pekopasta":  # easter egg
-                reply_f(replies.cursed_pekopasta, "Pekopasta'd", comment)
 
             # More than [50] comments has been scanned without an incident, reset wait time.
             if comments_scanned % 50 == 0:
