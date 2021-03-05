@@ -37,11 +37,11 @@ cursed_pekopasta = "So as a joke, I went to my friend's house wearing Pekora's w
                    "by taking off my clothes. He asked me, \"Are you serious?\" and I said \"Yep peko.\"\nHe went" \
                    " silent for what seemed like forever, so I asked him, \"What's the matter peko?\" He said he's " \
                    "confused, but then his boner got really hard, which made me take off his clothes. I expected him " \
-                   "to scream, \"Stop!\" as I kissed him and stroked his cock, but he instead shouted \"Oh God, " \
+                   "to scream, \"Stop!\" as I kissed him and stroked his c\*ck, but he instead shouted \"Oh God, " \
                    "Pekora!\" which made me get a boner myself. Before I knew it, I was blowing him for the first time" \
                    " till he came.\nHis semen was so thick, it got stuck inside my throat no matter how hard I " \
                    "swallowed. He then said, \"I want to fuck you now!\" and seeing that we've already gone that far " \
                    "and we were both naked, I obliged. A few hours later, the jerk went all pale and said to me \"Why " \
                    "did we do that? Now I'm not fucking straight.\" But he still looked so cute all confused like " \
-                   "that, so I took pity on him and reassured while wiping his cum off my face, \"Let's just pretend " \
+                   "that, so I took pity on him and reassured while wiping his c\*m off my face, \"Let's just pretend " \
                    "I'm still Pekora.\""
