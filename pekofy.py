@@ -19,7 +19,9 @@ def pekofy(text):
     # pattern looks incomprehensible, but it just matches links, and any punctuation at the end (plus parenthesis)
     link_pattern = rf'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]*\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)([{"".join(punctuation_list)})])*'
     # a pattern that matches any punctuation not in a link
-    punctuation_pattern = regex.compile(rf'(?<!({link_pattern}))([{"".join(punctuation_list)}])+')
+
+    incomp_pattern = rf'(?<!<|!>)([{"".join(punctuation_list)}]+)(?!>)'
+    punctuation_pattern = regex.compile(rf'(?<!({link_pattern})){incomp_pattern}')
 
     new_text = text
     # offset to account for adding keywords
