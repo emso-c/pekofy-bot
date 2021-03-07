@@ -48,10 +48,10 @@ def pekofy(input_text):
         # Exceptions
         # General case for when there's already a peko and it's newly added
         already_keyword = (new_text[j - len(keyword):j] == keyword)
-        original_keyword = (text[j - offset - len(keyword):j - offset] == keyword)
+        if_newly_added = (text[j - offset - len(keyword):j - offset] == keyword)
         # nbsp-specific exception
         nbsp = new_text[j - len('&#x200B'):j] == '&#x200B'
-        if (already_keyword and not original_keyword) or nbsp:
+        if (already_keyword and not if_newly_added) or nbsp:
             continue
 
         new_text = new_text[:j] + keyword + new_text[j:]
