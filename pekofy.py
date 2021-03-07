@@ -5,7 +5,10 @@ def is_japanese(text):
 
 # Tbh, this one is bit of a mess and probably the most un-pythonic way to do this, but hey, it works! (kinda)
 # If you know a better way to implement, please create a pull request.
-def pekofy(text):
+def pekofy(input_text):
+    # Just to make the matching work if the text doesn't already include a newline at the end
+    text = input_text + '\n'
+
     if not text.lower().islower() and not is_japanese(text):
         return "NO_LETTER"
 
@@ -27,7 +30,7 @@ def pekofy(text):
     # offset to account for adding keywords
     offset = 0
 
-    for match in punctuation_pattern.finditer(text + '\n'):
+    for match in punctuation_pattern.finditer(new_text):
         i = match.start() + offset # match point
         last_word = regex.search(r'\w+', new_text[i::-1]) # find the nearest alphanumeric behind match point
         try:
