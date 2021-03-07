@@ -96,13 +96,11 @@ def pekofy(text):
                     if line[i].endswith('>'):  # SPOILER SOLUTION
                         continue
                     if line[i + 1] and regex_comp.search(line[i + 1]):
-                        # if jap last char
                         if is_japanese(line[i][-1]):
                             line[i] = line[i] + jp_keyword
                             continue
                         line[i] = line[i] + (keyword if not line[i].isupper() else keyword.upper())
                 else:
-                    # if jap last char
                     if line[i] == '&#x200B;':
                         continue
                     if is_japanese(line[i][-1]):
@@ -114,7 +112,7 @@ def pekofy(text):
                         continue
                     line[i] = line[i] + (keyword if not line[i].isupper() else keyword.upper())
         new_text.append(''.join(line))
-    # probably it doesn't even enter here, but idk. #update: enters here if there's only a japanese punctuation
     if new_text == text:
         return "NOTHING_CHANGED"
-    return '\n'.join(new_text)
+    return '\n'.join(new_text).replace("u/","u​/")
+
