@@ -60,4 +60,4 @@ def pekofy(input_text):
     if new_text == text:
         return "NOTHING_CHANGED"
 
-    return new_text
+    return new_text[:-1]
