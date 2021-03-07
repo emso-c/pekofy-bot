@@ -26,7 +26,8 @@ def pekofy(text):
     new_text = text
     # offset to account for adding keywords
     offset = 0
-    for match in punctuation_pattern.finditer(text):
+
+    for match in punctuation_pattern.finditer(text + '\n'):
         i = match.start() + offset # match point
         last_word = regex.search(r'\w+', new_text[i::-1]) # find the nearest alphanumeric behind match point
         j = i - last_word.start() + 1 # index to insert keyword
