@@ -16,8 +16,8 @@ def pekofy(text):
     jp_keyword = 'ぺこ'
     en_keyword = ' peko'
 
-    # pattern looks incomprehensible, but it just matches links (with or without parentheses at the end)
-    link_pattern = r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]*\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)(\)?)'
+    # pattern looks incomprehensible, but it just matches links, and any punctuation at the end (plus parenthesis)
+    link_pattern = rf'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]*\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)([{"".join(punctuation_list)})])*'
     # a pattern that matches any punctuation not in a link
     punctuation_pattern = regex.compile(rf'(?<!({link_pattern}))([{"".join(punctuation_list)}])+')
 
