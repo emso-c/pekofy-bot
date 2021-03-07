@@ -3,8 +3,6 @@ import regex
 def is_japanese(text):
     return regex.compile("[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf}]").search(text)
 
-# Tbh, this one is bit of a mess and probably the most un-pythonic way to do this, but hey, it works! (kinda)
-# If you know a better way to implement, please create a pull request.
 def pekofy(input_text):
     # Just to make the matching work if the text doesn't already include a newline at the end
     text = input_text + '\n'
@@ -60,4 +58,4 @@ def pekofy(input_text):
     if new_text == text:
         return "NOTHING_CHANGED"
 
-    return new_text[:-1]
+    return new_text[:-1].replace("u/","u​/")
