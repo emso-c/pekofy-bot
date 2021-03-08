@@ -56,7 +56,7 @@ def reply_f(reply_message, action_type, comment_obj):
     print("Message: {}".format(reply_message))
     print("------------------------")
 
-def already_replied_to(comment, reply):
+def already_replied_to(comment, reply, repeated=False):
     """ returns if already replied the same type of comment or not """
     comment.refresh()
     comment.replies.replace_more()
@@ -67,57 +67,45 @@ def already_replied_to(comment, reply):
         if top_comment.author == bot_name:
             if top_comment.body == reply:
                 print("ALREADY REPLIED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body in replies.thanks and reply in replies.thanks:
                 print("ALREADY THANKED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body in replies.sorrys and reply in replies.sorrys:
                 print("ALREADY SORRIED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body == replies.pain_peko_reply:
                 print("ALREADY PAIN PEKO'd, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body == replies.hey_moona_reply:
                 print("ALREADY HEY MOONA'd, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body in replies.nothing_changed_reply_list and reply in replies.nothing_changed_reply_list:
                 print("ALREADY NOTHING CHANGED'd, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body == replies.no_recursion_reply:
                 print("ALREADY NO'd, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body == replies.limit_reached_reply:
                 print("ALREADY LIMIT REACHED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body == replies.bot_score_abuse_reply:
                 print("ALREADY ABUSE PREVENTED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body == replies.confused_reply:
                 print("ALREADY CONFUSED, CONTINUING...")  # lol
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body in replies.insults and reply in replies.insults:
                 print("ALREADY INSULTED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body in replies.loves and reply in replies.loves:
                 print("ALREADY LOVED, CONTINUING...")
-                print("------------------------")
-                return True
+                repeated=True
             if top_comment.body in replies.cutes and reply in replies.cutes:
                 print("ALREADY CUTE'D, CONTINUING...")
-                print("------------------------")
-                return True
-    return False
+                repeated=True
+            print("------------------------") if repeated
+    return repeated
 
 def notify_author(exception, comment="None", tried_reply="None"):
     """ Notifies to the author, don't forget to whitelist the bot if your PM's are closed """
@@ -168,7 +156,8 @@ while 1:
                     if comment.parent().author.name == bot_name:  # replying to the bot
 
                         # positive feedback reply
-                        if ("good" in comment.body.lower() or "best" in comment.body.lower() or "amazing" in comment.body.lower() or "based" in comment.body.lower()) and "bot" in comment.body.lower():
+                        positive_replys = ["good", "best", "amazing", "based"]
+                        if any(positive_reply in comment.body.lower() for positive_reply in positive_replys) and "bot" in comment.body.lower():
                             reply_f(random.choice(replies.thanks), "Thanked", comment)
                         elif "love you" in comment.body.lower():
                             reply_f(random.choice(replies.loves), "Loved", comment)
@@ -232,8 +221,8 @@ while 1:
 
                 # someone tried to pekofy a good/bad bot reply, don't pekofy
                 if comment.parent().body:
-                    if "good bot" == comment.parent().body.lower() or "good bot." == comment.parent().body.lower() or \
-                            "bad bot" == comment.parent().body.lower() or "bad bot." == comment.parent().body.lower():
+                    if "good bot" in comment.parent().body.lower() or \
+                            "bad bot" in comment.parent().body.lower():
                         reply_f(replies.bot_score_abuse_reply, "Potential abuse prevented", comment)
                         continue
 
