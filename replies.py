@@ -1,10 +1,12 @@
 pekora_noises = {
     "naww": "https://www.youtube.com/watch?v=JNgCFHbPARg",
-    "motherfucker": "https://www.youtube.com/watch?v=1OjQVMiyUMg",
+    "motherf*cker": "https://www.youtube.com/watch?v=1OjQVMiyUMg",
     "oh no jesus": "https://www.youtube.com/watch?v=MwCNEySMNWg",
     "yolo": "https://www.youtube.com/watch?v=MSUckSO-Dsw",
     "ogey rrat": "https://www.youtube.com/watch?v=JacN1MzyeKo",
-    "rrat simulator rrrra": "https://www.youtube.com/watch?v=Xr_pKdyeIJo"
+    "rrat simulator rrrra": "https://www.youtube.com/watch?v=Xr_pKdyeIJo",
+    "wao wao waoo!":"https://www.youtube.com/watch?v=O9s_HLql2YM",
+    "pardun?":"https://www.youtube.com/watch?v=a3DpRlWdnDw"
 }
 nothing_changed_reply_list = []
 for title, link in pekora_noises.items():
