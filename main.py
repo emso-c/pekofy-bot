@@ -46,14 +46,14 @@ def reply_f(reply_message, action_type, comment_obj):
         comment_obj.reply(reply_message)
     except Exception as e:  # unable to comment on the post, potential ban
         comments_replied -= 1
-        print("Couldn't reply: {}".format(e))
-        print('Tried comment: https://www.reddit.com{}'.format(comment_obj.permalink))
-        print('Reply: {}'.format(reply_message))
+        print(f"Couldn't reply: {e}")
+        print(f'Tried comment: https://www.reddit.com{comment_obj.permalink}')
+        print(f'Reply: {reply_message}')
         print("------------------------")
         notify_author(e, comment_obj, reply_message)
         return
-    print("{}: https://www.reddit.com{}".format(action_type, comment_obj.permalink))
-    print("Message: {}".format(reply_message))
+    print(f"{action_type}: https://www.reddit.com{comment_obj.permalink}")
+    print(f"Message: {reply_message}")
     print("------------------------")
 
 def already_replied_to(comment, reply):
@@ -124,11 +124,11 @@ def notify_author(exception, comment="None", tried_reply="None"):
 
     title = datetime.now().strftime("%Y.%m.%d - %H:%M:%S")
     if comment != "None" and tried_reply != "None":
-        body = '{} has run into an error: {}\n' \
-               'Here\'s the [link](https://www.reddit.com{}) to the comment.\n' \
-               'Tried to reply this: {}'.format(bot_name, exception, comment.permalink, tried_reply)
+        body = f'{bot_name} has run into an error: {exception}\n' \
+               f'Here\'s the [link](https://www.reddit.com{comment.permalink}) to the comment.\n' \
+               f'Tried to reply this: {tried_reply}'
     else:
-        body = '{} has run into an error: {}\n'.format(bot_name, exception)
+        body = f'{bot_name} has run into an error: {exception}\n'
     reddit.redditor(author).message(title, body)
 
 def reply_chance(percent):
@@ -243,7 +243,7 @@ while 1:
             # delete keyphrase found
             if keyphrase_delete in comment.body and comment.parent().author == bot_name and comment.parent().body:
                 print("Unpekofied: ")
-                print('Reply: {}'.format(comment.parent().body))
+                print(f'Reply: {comment.parent().body}')
                 comment.parent().delete()
                 print("------------------------")
 
@@ -254,18 +254,18 @@ while 1:
         print("Keyboard Interrupt. Terminating...")
         break
     except praw.exceptions.RedditAPIException as e:
-        print("RedditAPIException: {}".format(e))
+        print(f"RedditAPIException: {e}")
         notify_author(e)
     except praw.exceptions.PRAWException as e:
-        print("PRAWException: {}".format(e))
+        print(f"PRAWException: {e}")
         notify_author(e)
     except Exception as e:
         print(e)
         notify_author(e)
     finally:
         print("------------------------")
-        print("Replied comments so far: {}".format(comments_replied))
-        print("Scanned comments so far: {}".format(comments_scanned))
+        print(f"Replied comments so far: {comments_replied}")
+        print(f"Scanned comments so far: {comments_scanned}")
         comments_replied = 0
         comments_scanned = 0
 
