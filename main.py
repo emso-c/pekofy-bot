@@ -3,7 +3,7 @@ import string
 from datetime import datetime
 import time
 import random
-import replies
+from replies import Replies
 import credentials
 import pekofy as peko  # because it sounds better
 
@@ -19,6 +19,7 @@ subreddit_list = ['u_'+bot_name, 'u_'+author, 'hololive', 'VirtualYoutubers', 'H
 subreddit = reddit.subreddit('+'.join(subreddit_list))
 keyphrase = '!pekofy'
 keyphrase_delete = '!unpekofy'
+replies = Replies()
 
 
 def reply_f(reply_message, action_type, comment_obj):
@@ -70,54 +71,17 @@ def already_replied_to(comment, reply):
                 print("ALREADY REPLIED, CONTINUING...")
                 print("------------------------")
                 return True
-            if top_comment.body in replies.thanks and reply in replies.thanks:
-                print("ALREADY THANKED, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body in replies.sorrys and reply in replies.sorrys:
-                print("ALREADY SORRIED, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body == replies.pain_peko_reply:
-                print("ALREADY PAIN PEKO'd, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body == replies.hey_moona_reply:
-                print("ALREADY HEY MOONA'd, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body in replies.nothing_changed_reply_list and reply in replies.nothing_changed_reply_list:
-                print("ALREADY NOTHING CHANGED'd, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body == replies.no_recursion_reply:
-                print("ALREADY NO'd, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body == replies.limit_reached_reply:
-                print("ALREADY LIMIT REACHED, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body == replies.bot_score_abuse_reply:
-                print("ALREADY ABUSE PREVENTED, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body == replies.confused_reply:
-                print("ALREADY CONFUSED, CONTINUING...")  # lol
-                print("------------------------")
-                return True
-            if top_comment.body in replies.insults and reply in replies.insults:
-                print("ALREADY INSULTED, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body in replies.loves and reply in replies.loves:
-                print("ALREADY LOVED, CONTINUING...")
-                print("------------------------")
-                return True
-            if top_comment.body in replies.cutes and reply in replies.cutes:
-                print("ALREADY CUTE'D, CONTINUING...")
-                print("------------------------")
-                return True
+            for attribute, value in replies.__dict__.items():
+                if isinstance(value, str):
+                    if top_comment.body == value:
+                        print(f"ALREADY REPLIED WITH `{attribute}`, CONTINUING...")
+                        print("------------------------")
+                        return True
+                if isinstance(value, list):
+                    if top_comment.body in value and reply in value:
+                        print(f"ALREADY REPLIED WITH `{attribute}`, CONTINUING...")
+                        print("------------------------")
+                        return True
     return False
 
 
