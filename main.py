@@ -56,6 +56,7 @@ def reply_f(reply_message, action_type, comment_obj):
     print(f"Message: {reply_message}")
     print("------------------------")
 
+
 def already_replied_to(comment, reply):
     """ returns if already replied the same type of comment or not """
     comment.refresh()
@@ -119,6 +120,7 @@ def already_replied_to(comment, reply):
                 return True
     return False
 
+
 def notify_author(exception, comment="None", tried_reply="None"):
     """ Notifies to the author, don't forget to whitelist the bot if your PM's are closed """
 
@@ -130,6 +132,7 @@ def notify_author(exception, comment="None", tried_reply="None"):
     else:
         body = f'{bot_name} has run into an error: {exception}\n'
     reddit.redditor(author).message(title, body)
+
 
 def reply_chance(percent):
     return random.randint(0, 100) <= percent
@@ -149,17 +152,18 @@ while 1:
         # scan each comment
         for comment in subreddit.stream.comments():
             comments_scanned += 1
+            body = comment.body.lower()
 
             # comment has been deleted or it's author is the bot itself, move on
             if not comment.author or comment.author == bot_name:
                 continue
 
             # pain peko (not used regex for faster results)
-            if comment.body.lower() in ["pain", "pain.", "pain...", "pain peko"] and reply_chance(50):
+            if body in ["pain", "pain.", "pain...", "pain peko"] and reply_chance(50):
                 reply_f(replies.pain_peko_reply, "Pain peko'd", comment)
 
             # hey moona
-            if "moona" in comment.body.lower() and "pekora" in comment.body.lower() and reply_chance(25):
+            if "moona" in body and "pekora" in body and reply_chance(25):
                 reply_f(replies.hey_moona_reply, "Hey Moona'd", comment)
 
             # feedback gratitude
@@ -168,18 +172,18 @@ while 1:
                     if comment.parent().author.name == bot_name:  # replying to the bot
 
                         # positive feedback reply
-                        if ("good" in comment.body.lower() or "best" in comment.body.lower() or "amazing" in comment.body.lower() or "based" in comment.body.lower()) and "bot" in comment.body.lower():
+                        if any(word in body for word in ["good", "best", "amazing", "based"]) and "bot" in body:
                             reply_f(random.choice(replies.thanks), "Thanked", comment)
-                        elif "love you" in comment.body.lower():
+                        elif "love you" in body:
                             reply_f(random.choice(replies.loves), "Loved", comment)
-                        elif "cute" in comment.body.lower():
+                        elif "cute" in body:
                             reply_f(random.choice(replies.cutes), "Cute'd", comment)
 
                         # negative feedback reply
-                        elif "bad" in comment.body.lower() and "bot" in comment.body.lower():
+                        elif "bad" in body and "bot" in body:
                             reply_f(random.choice(replies.sorrys), "Sorried", comment)
                         # others
-                        elif "insult me peko" in comment.body.lower():
+                        elif "insult me peko" in body:
                             reply_f(random.choice(replies.insults), "Insulted", comment)
 
 
