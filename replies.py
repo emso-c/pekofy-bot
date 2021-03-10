@@ -29,7 +29,8 @@ replies = {
         "message": "[pain-peko.](https://preview.redd.it/dvk3bft2a9l51.jpg?auto=webp&s=d5e53605dc0e99ed55884fc00c9b965c7dd38e7c)",
         "chance": 50,
         "triggers": ["pain", "pain.", "pain...", "pain peko"],
-        "trigger_type": "any"
+        "trigger_type": "any",
+        "exact": True
     },
     "limit reached": {
         "message": "Sorry peko, but I can't pekofy it any further to prevent spam peko. Thank you for your understanding peko.",
@@ -66,7 +67,7 @@ replies = {
            "ばかたれが！", "あんたはバカなの？", "ぺっ", "Go peko yourself!",
            "[Disgusting.](https://streamable.com/6ntf2g)"],
         "triggers": ["insult me peko"],
-        "trigger_type": "all"
+        "trigger_type": "all",
     },
     "love":{
         "messages":
