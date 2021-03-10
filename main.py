@@ -14,10 +14,11 @@ reddit = praw.Reddit(client_id=credentials.client_id,
                      username=credentials.bot_name,
                      password=credentials.bot_pass,
                      user_agent=credentials.user_agent)
-subreddit_list = ['u_'+bot_name, 'u_'+author, 'hololive', 'VirtualYoutubers', 'Hololewd', 'okbuddyhololive',
+subreddit_list = ['u_' + bot_name, 'u_' + author, 'hololive', 'VirtualYoutubers', 'Hololewd', 'okbuddyhololive',
                   'goodanimemes', 'VtuberV8', 'Priconne', 'AmeliaWatson', 'GawrGura']
 subreddit = reddit.subreddit('+'.join(subreddit_list))
 replies = r.replies
+
 
 def reply_f(reply, comment_obj, pekofy_msg=None):
     """
@@ -54,6 +55,7 @@ def reply_f(reply, comment_obj, pekofy_msg=None):
     print(f"Reply: {message}")
     print("------------------------")
 
+
 def already_replied_to(comment, reply):
     """ returns if already replied the same type of comment or not """
 
@@ -76,6 +78,7 @@ def already_replied_to(comment, reply):
                     return True
     return False
 
+
 def notify_author(exception, comment=None, tried_reply=None):
     """ Notifies to the author, don't forget to whitelist the bot if your PM's are closed """
 
@@ -88,6 +91,7 @@ def notify_author(exception, comment=None, tried_reply=None):
         body = f'{bot_name} has run into an error: {exception}\n'
     reddit.redditor(author).message(title, body)
 
+
 def is_triggering(text, reply):
     """ whether the text triggers the given reply type or not """
 
@@ -99,6 +103,7 @@ def is_triggering(text, reply):
     if replies[reply]["trigger_type"] == "all":
         return all(condition) and ("bot" in text if include_bot else True)
     return any(condition) and ("bot" in text if include_bot else True)
+
 
 def passed_limit(comment, limit=2):
     """ returns true if the same comment has been pekofied too much by
@@ -116,6 +121,7 @@ def passed_limit(comment, limit=2):
                 comment = comment.parent()
                 current_usage += 1
     return current_usage == limit
+
 
 def is_top_level(comment):
     """ returns if the comment is top level (directly replied to the post) """
@@ -158,7 +164,7 @@ while 1:
                                 break
             if replied:
                 continue
-              
+
             # both pekofy and unpekofy written
             if is_triggering(comment.body, "confused"):
                 reply_f("confused", comment)
@@ -168,12 +174,13 @@ while 1:
             if is_triggering(comment.body, "pekofy"):
 
                 # can't pekofy due to comment not having any parent
-                if not comment.parent().author or not comment.parent().body:
+                if not comment.parent().author:
                     continue
 
                 # parent is a post, pekofy accordingly
                 if is_top_level(comment):
-                    reply_f("pekofy", comment, peko.pekofy(comment.submission.title + '\n\n' + comment.submission.selftext if comment.submission.selftext else comment.submission.title))
+                    reply_f("pekofy", comment, peko.pekofy(
+                        comment.submission.title + '\n\n' + comment.submission.selftext if comment.submission.selftext else comment.submission.title))
                     continue
 
                 # someone tried to break it by recursive calling, kindly say no
@@ -199,7 +206,8 @@ while 1:
                 reply_f("pekofy", comment, peko.pekofy(comment.parent().body))
 
             # delete keyphrase found
-            if is_triggering(comment.body, "unpekofy") and comment.parent().author == bot_name and comment.parent().body:
+            if is_triggering(comment.body,
+                             "unpekofy") and comment.parent().author == bot_name and comment.parent().body:
                 print(f'Unpekofied: {comment.parent().body}')
                 comment.parent().delete()
                 print("------------------------")
@@ -215,9 +223,6 @@ while 1:
         notify_author(e)
     except praw.exceptions.PRAWException as e:
         print(f"PRAWException: {e}")
-        notify_author(e)
-    except Exception as e:
-        print(f"Error: {e}")
         notify_author(e)
     finally:
         print("------------------------")
