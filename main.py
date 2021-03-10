@@ -147,12 +147,18 @@ while 1:
             reply_f("hey moona", comment) if is_triggering(comment.body.lower(), "hey moona") else None
 
             # feedback gratitude
+            replied = False
             if not is_top_level(comment):
                 if comment.parent().author:
                     if comment.parent().author.name == bot_name:
                         for feedback in ["thank", "love", "cute", "sorry", "insult"]:
-                            reply_f(feedback, comment) if is_triggering(comment.body.lower(), feedback) else None
-
+                            if is_triggering(comment.body.lower(), feedback):
+                                reply_f(feedback, comment)
+                                replied = True
+                                break
+            if replied:
+                continue
+              
             # both pekofy and unpekofy written
             if is_triggering(comment.body, "confused"):
                 reply_f("confused", comment)
