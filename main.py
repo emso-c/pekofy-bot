@@ -224,6 +224,9 @@ while 1:
     except praw.exceptions.PRAWException as e:
         print(f"PRAWException: {e}")
         notify_author(e)
+    except Exception as e:
+        print(f"Unhandled exception: {e}")
+        notify_author(e)
     finally:
         print("------------------------")
         print(f"Replied comments so far: {comments_replied}")
