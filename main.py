@@ -58,8 +58,17 @@ def reply_f(reply, comment_obj, pekofy_msg=None):
 
 def already_replied_to(comment, reply):
     """ returns if already replied the same type of comment or not """
-
-    comment.refresh()
+    
+    second_refresh = False
+    for i in range(2):
+      try:
+          comment.refresh()
+          break
+      except praw.exceptions.ClientException: # work around as stated in the praw issue 838
+          if second_refresh:
+              return False
+          time.sleep(10)
+          second_refresh = True
     comment.replies.replace_more()
     child_comments = comment.replies.list()
     for top_comment in child_comments:
