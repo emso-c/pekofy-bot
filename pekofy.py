@@ -11,7 +11,7 @@ def pekofy(input_text):
         return "NO_LETTER"
 
     en_punctuation_list = ['.', '?', '!', '\]', '\n']
-    jp_punctuation_list = ['。', '？', '！', '」', '・']
+    jp_punctuation_list = ['。', '？', '！', '」', '・', '”', '】', '』', '；']
     punctuation_list = en_punctuation_list + jp_punctuation_list
 
     jp_keyword = 'ぺこ'
