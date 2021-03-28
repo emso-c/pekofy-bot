@@ -98,7 +98,10 @@ def notify_author(exception, comment=None, tried_reply=None):
                f"Tried to reply this: {tried_reply}"
     else:
         body = f'{bot_name} has run into an error: {exception}\n'
-    reddit.redditor(author).message(title, body)
+    try:
+        reddit.redditor(author).message(title, body)
+    except Exception:
+        print("Couldn't notify the author")
 
 
 def is_triggering(text, reply):
