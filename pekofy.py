@@ -30,7 +30,7 @@ def pekofy(input_text):
 
     for match in punctuation_pattern.finditer(new_text):
         i = match.start() + offset # match point
-        last_word = regex.search(r'\w+', new_text[i::-1]) # find the nearest alphanumeric behind match point
+        last_word = regex.search(r'[^\W_]', new_text[i::-1]) # find the nearest alphanumeric behind match point
         try:
             j = i - last_word.start() + 1 # index to insert keyword
 
