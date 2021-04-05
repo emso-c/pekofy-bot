@@ -81,6 +81,7 @@ replies = {
             ["You're cute too peko!", "You're also cute peko!", "You're cute too peko~", "You're also cute peko~", "Ehehe", "あなたもかわいいぺこ！"],
         "triggers": ["cute"],
         "trigger_type": "all",
+        "include_bot": True
     },
     "nothing changed": {
         "messages":
