@@ -73,7 +73,7 @@ replies = {
         "messages":
             ["Thank you guys. Don't cheat on me, okay? [Peko~](https://streamable.com/8gagri)",
             "[Love you](https://streamable.com/dbzfxj) too peko!", "I love you too peko!", "Love you too peko~"],
-        "triggers": ["love you"],
+        "triggers": ["love you","すき","好き"],
         "trigger_type": "all"
     },
     "cute": {
