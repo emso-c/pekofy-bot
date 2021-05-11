@@ -41,14 +41,12 @@ def reply_f(reply, comment_obj, pekofy_msg=None):
             already_replied_to(comment_obj, reply):
         return
 
-    global comments_replied
-    comments_replied += 1
-
     message = random.choice(reply_content["messages"]) if "messages" in replies[reply] else reply_content["message"]
     try:
         comment_obj.reply(message)
+        global comments_replied
+        comments_replied += 1
     except Exception as e:
-        comments_replied -= 1
         print(f"Couldn't reply: {e}")
         notify_author(e, comment_obj, message)
     print(f"{reply}: https://www.reddit.com{comment_obj.permalink}")
@@ -75,16 +73,10 @@ def already_replied_to(comment, reply):
         if top_comment.parent().id != comment.id:
             break
         if top_comment.author == bot_name:
-            if "messages" in replies[reply]:
-                if top_comment.body in replies[reply]["messages"]:
-                    print(f"Already {reply}'d: {top_comment.body} \ncontinuing...")
-                    print("------------------------")
-                    return True
-            else:
-                if top_comment.body == replies[reply]["message"]:
-                    print(f"Already {reply}'d: {top_comment.body} \ncontinuing...")
-                    print("------------------------")
-                    return True
+            if top_comment.body in replies[reply]["messages" if "messages" in replies[reply] else "message"]:
+                print(f"Already {reply}'d: {top_comment.body} \ncontinuing...")
+                print("------------------------")
+                return True
     return False
 
 
@@ -162,14 +154,15 @@ while 1:
             reply_f("pain peko", comment) if is_triggering(comment.body.lower(), "pain peko") else None
 
             # hey moona reply
-            reply_f("hey moona", comment) if is_triggering(comment.body.lower(), "hey moona") else None
+            if len(comment.body)<350:  # longer messages tend to be more serious, don't "hey moona"
+                reply_f("hey moona", comment) if is_triggering(comment.body.lower(), "hey moona") else None
 
             # feedback gratitude
             replied = False
             if not is_top_level(comment):
                 if comment.parent().author:
                     if comment.parent().author.name == bot_name:
-                        for feedback in ["thank", "love", "cute", "sorry", "insult"]:
+                        for feedback in ["love", "cute", "thank", "sorry", "insult"]:
                             if is_triggering(comment.body.lower(), feedback):
                                 reply_f(feedback, comment)
                                 replied = True
@@ -218,8 +211,7 @@ while 1:
                 reply_f("pekofy", comment, peko.pekofy(comment.parent().body))
 
             # delete keyphrase found
-            if is_triggering(comment.body,
-                             "unpekofy") and comment.parent().author == bot_name and comment.parent().body:
+            if is_triggering(comment.body, "unpekofy") and comment.parent().author == bot_name and comment.parent().body:
                 print(f'Unpekofied: {comment.parent().body}')
                 comment.parent().delete()
                 print("------------------------")
