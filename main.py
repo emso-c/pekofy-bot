@@ -132,6 +132,26 @@ def is_top_level(comment):
     return comment.parent_id == comment.link_id
 
 
+def is_anti(comment):
+    """ Checks if author of the comment is a possible anti/hater by
+        counting their overall comment score in the same comment tree """
+    score_sum = comment.score
+    temp_comment = comment
+    while True:
+        if is_top_level(temp_comment.parent()):
+            break
+        if temp_comment.parent().author:
+            temp_comment = temp_comment.parent()
+            if temp_comment.author == comment.author:  # same user in the comment chain, add to sum
+                score_sum += temp_comment.score
+        else:
+            break
+    
+    if score_sum < -1:
+        return True
+    return False
+
+
 comments_replied, comments_scanned = 0, 0
 
 # used for exponential back off in case reddit server is unable to respond
@@ -206,6 +226,10 @@ while 1:
                 if passed_limit(comment):
                     reply_f("limit reached", comment)
                     continue
+                
+                # not pekofy if anti/hater
+                if is_anti(comment):
+                    reply_f("no", comment)
 
                 # try to reply to the comment
                 reply_f("pekofy", comment, peko.pekofy(comment.parent().body))
