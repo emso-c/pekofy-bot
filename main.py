@@ -230,6 +230,7 @@ while 1:
                 # not pekofy if anti/hater
                 if is_anti(comment):
                     reply_f("no", comment)
+                    continue
 
                 # try to reply to the comment
                 reply_f("pekofy", comment, peko.pekofy(comment.parent().body))
