@@ -237,9 +237,10 @@ while 1:
 
             # delete keyphrase found
             if is_triggering(comment.body, "unpekofy") and comment.parent().author == bot_name and comment.parent().body:
-                print(f'Unpekofied: {comment.parent().body}')
-                comment.parent().delete()
-                print("------------------------")
+                if comment.parent().score < -1:
+                    print(f'Unpekofied: {comment.parent().body}')
+                    comment.parent().delete()
+                    print("------------------------")
 
             # More than [reset_limit] comments has been scanned without an incident, reset wait time.
             if comments_scanned % reset_limit == 0:
