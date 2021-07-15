@@ -69,6 +69,7 @@ def pekofy(input_text):
     new_text = new_text[:-1].replace("u/","u​/")
 
     # filter profanity
+    profanity.load_censor_words_from_file('./profanity/custom_profanity_wordlist.txt')
     new_text = profanity.censor(new_text, censor_char='\*', middle_only=True)
     
     return new_text
