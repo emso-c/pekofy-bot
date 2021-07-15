@@ -69,6 +69,6 @@ def pekofy(input_text):
     new_text = new_text[:-1].replace("u/","u​/")
 
     # filter profanity
-    new_text = profanity.censor(new_text, middle_only=True)
+    new_text = profanity.censor(new_text, censor_char='\*', middle_only=True)
     
     return new_text
