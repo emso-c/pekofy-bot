@@ -1,5 +1,12 @@
 import regex
 
+# IMPORTANT: This version of the better_profanity is the one I forked and
+# the PR is not approved atm, so use the following line to install it 
+# individually for the time being.
+# pip install git+https://github.com/emso-c/better_profanity.git@issue-34
+from better_profanity import profanity
+
+
 def is_japanese(text):
     return regex.compile("[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf}]").search(text)
 
@@ -58,4 +65,10 @@ def pekofy(input_text):
     if new_text == text:
         return "NOTHING_CHANGED"
 
-    return new_text[:-1].replace("u/","u​/")
+    # add zero-width-whitespace to disable mentioning usernames
+    new_text = new_text[:-1].replace("u/","u​/")
+
+    # filter profanity
+    new_text = profanity.censor(new_text, middle_only=True)
+    
+    return new_text
