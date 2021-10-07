@@ -5,7 +5,7 @@ import regex
 # individually for the time being.
 # pip install git+https://github.com/emso-c/better_profanity.git@issue-34
 from better_profanity import profanity
-
+profanity.load_censor_words_from_file('./profanity/custom_profanity_wordlist.txt')
 
 ZERO_WIDTH_WHITESPACE = str("​")  # len(ZERO_WIDTH_WHITESPACE) is 1
 
@@ -71,7 +71,6 @@ def pekofy(input_text):
     new_text = new_text[:-1].replace("u/",f"u{ZERO_WIDTH_WHITESPACE}/")
 
     # filter profanity
-    profanity.load_censor_words_from_file('./profanity/custom_profanity_wordlist.txt')
     new_text = profanity.censor(new_text, censor_char='\*', middle_only=True)
     
     return new_text
