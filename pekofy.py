@@ -7,6 +7,8 @@ import regex
 from better_profanity import profanity
 
 
+ZERO_WIDTH_WHITESPACE = str("​")  # len(ZERO_WIDTH_WHITESPACE) is 1
+
 def is_japanese(text):
     return regex.compile("[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf}]").search(text)
 
@@ -66,7 +68,7 @@ def pekofy(input_text):
         return "NOTHING_CHANGED"
 
     # add zero-width-whitespace to disable mentioning usernames
-    new_text = new_text[:-1].replace("u/","u​/")
+    new_text = new_text[:-1].replace("u/",f"u{ZERO_WIDTH_WHITESPACE}/")
 
     # filter profanity
     profanity.load_censor_words_from_file('./profanity/custom_profanity_wordlist.txt')
