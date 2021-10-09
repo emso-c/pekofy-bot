@@ -8,7 +8,7 @@ CURR_PATH = os.path.abspath(os.path.join(__file__, ".."))
 # pip install git+https://github.com/emso-c/better_profanity.git@issue-34
 from better_profanity import profanity
 
-profanity.load_censor_words_from_file(f'{CURR_PATH}\\profanity\\custom_profanity_wordlist.txt')
+profanity.load_censor_words_from_file(f'{CURR_PATH}/profanity/custom_profanity_wordlist.txt')
 
 ZERO_WIDTH_WHITESPACE = str("​")  # len(ZERO_WIDTH_WHITESPACE) is 1
 
