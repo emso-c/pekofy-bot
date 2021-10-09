@@ -36,10 +36,10 @@ def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
     :type debug: bool
     """
 
+    REPLIES["pekofy"]["messages"] = []
     if pekofy_msg:
         REPLIES["pekofy"]["messages"] = [pekofy_msg]
         if is_triggering(pekofy_msg, "nothing changed"):
-            REPLIES["pekofy"]["messages"] = []
             reply = "nothing changed"
     
     reply_content = REPLIES[reply]

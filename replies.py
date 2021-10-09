@@ -1,8 +1,8 @@
 """ STRUCTURE
 replies = {
     reply_type: {
-        messages/messages (list): the messages it contains 
-        triggers (list): trigger words 
+        messages (list): the messages it contains
+        triggers (list): trigger words or phrases
         trigger_type (string): whether the text should include all the trigger words
         or just one of them, either 'all' or 'any'
         chance (int): chance to trigger between 0 and 100
@@ -125,7 +125,8 @@ REPLIES = {
                 "rrat simulator rrrra": "https://www.youtube.com/watch?v=Xr_pKdyeIJo",
                 "wao wao waoo!":"https://www.youtube.com/watch?v=O9s_HLql2YM",
                 "pardun?":"https://www.youtube.com/watch?v=a3DpRlWdnDw",
-                "holy sheet":"https://www.youtube.com/watch?v=yo0_m34o6Mg"
+                "holy sheet":"https://www.youtube.com/watch?v=yo0_m34o6Mg",
+                "motherf*cker": "https://www.youtube.com/watch?v=4q1B06m4_Lk" # Korone roll
             }.items()],
         "triggers": ["NOTHING_CHANGED", "NO_LETTER"],
         "trigger_type": "any",
