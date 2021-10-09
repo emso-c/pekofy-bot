@@ -2,6 +2,7 @@ import time
 import random
 from datetime import datetime
 import argparse
+import traceback
 
 import praw
 
@@ -35,10 +36,12 @@ def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
     :type debug: bool
     """
 
-    REPLIES["pekofy"]["messages"] = list(pekofy_msg)
-    if pekofy_msg and is_triggering(pekofy_msg, "nothing changed"):
-        reply = "nothing changed"
-
+    if pekofy_msg:
+        REPLIES["pekofy"]["messages"] = [pekofy_msg]
+        if is_triggering(pekofy_msg, "nothing changed"):
+            REPLIES["pekofy"]["messages"] = []
+            reply = "nothing changed"
+    
     reply_content = REPLIES[reply]
     if not random.randint(0, 100) <= REPLIES[reply]['chance'] or \
             already_replied_to(comment_obj, reply):
@@ -47,22 +50,19 @@ def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
     message = random.choice(reply_content["messages"])
     try:
         if not debug:
-            pass
-            #comment_obj.reply(message)
-        else:
-            print("Debug mode, didn't reply")
+            comment_obj.reply(message)
         global comments_replied
         comments_replied += 1
-    except Exception as e:
-        print(f"Couldn't reply: {e}")
+    except Exception:
+        print(f"Couldn't reply: {traceback.format_exc()}")
         if not debug:
-            notify_author(e, comment_obj, message)
+            notify_author(traceback.format_exc(), comment_obj, message)
     print(f"{reply}: https://www.reddit.com{comment_obj.permalink}")
     print(f"Reply: {message}")
     print("------------------------")
 
 
-def already_replied_to(comment, reply):
+def already_replied_to(comment, reply_type, verbose=True):
     """ returns if already replied the same type of comment or not """
     
     second_refresh = False
@@ -76,14 +76,27 @@ def already_replied_to(comment, reply):
           time.sleep(10)
           second_refresh = True
     comment.replies.replace_more()
+
+    if reply_type == "pekofy":
+        # pass pekofied reply to replies
+        if is_top_level(comment):
+            REPLIES[reply_type]["messages"] = [pekofy(
+                comment.submission.title +
+                '\n\n' +
+                comment.submission.selftext if comment.submission.selftext else comment.submission.title)
+            ]
+        elif comment.parent():
+            REPLIES[reply_type]["messages"] = [pekofy(comment.parent().body)]
+
     child_comments = comment.replies.list()
     for top_comment in child_comments:
         if top_comment.parent().id != comment.id:
             break
         if top_comment.author == BOT_NAME:
-            if top_comment.body in REPLIES[reply]["messages"]:
-                print(f"Already {reply}'d: {top_comment.body} \ncontinuing...")
-                print("------------------------")
+            if top_comment.body in REPLIES[reply_type]["messages"]:
+                if verbose:
+                    print(f"Already {reply_type}'d: {top_comment.body} \ncontinuing...")
+                    print("------------------------")
                 return True
     return False
 
@@ -127,11 +140,11 @@ def passed_limit(comment, limit=2):
 
     current_usage = 0
     for _ in range(limit):
-        if comment.parent_id == comment.link_id:
+        if is_top_level(comment):
             break
         if comment.parent().author == BOT_NAME:
             comment = comment.parent()
-            if comment.parent_id == comment.link_id:
+            if is_top_level(comment):
                 break
             if comment.parent().author and is_triggering(comment.parent().body, "pekofy"):
                 comment = comment.parent()
@@ -149,6 +162,11 @@ def is_anti(comment):
         counting their overall comment score in the same comment tree """
     score_sum = comment.score
     temp_comment = comment
+
+    if is_top_level(temp_comment):
+        # should not enter here in any case
+        return score_sum < -1
+
     while True:
         if is_top_level(temp_comment.parent()):
             break
@@ -159,9 +177,7 @@ def is_anti(comment):
         else:
             break
     
-    if score_sum < -1:
-        return True
-    return False
+    return score_sum < -1
 
 
 comments_replied, comments_scanned = 0, 0
@@ -170,14 +186,21 @@ def main(debug=False):
     global comments_replied, comments_scanned
     current_wait_time = INITIAL_WAIT_TIME
 
-    if debug:
-        print("Debug mode is ON")
+    print(f"Debug mode is {'ON' if debug else 'OFF'}")
+    if not debug:
+        for i in range(5, -1,-1):
+            time.sleep(1)
+            print(f"Starting in {i}...", end="\r")
+        print(" "*20, end="\r")
 
     while True:
         try:
             # scan each comment
             for comment in SUBREDDIT.stream.comments():
                 comments_scanned += 1
+
+                if comment.body == "Cute bot":
+                    print(comment, comment.body)
 
                 # comment has been deleted or it's author is the bot itself
                 if not comment.author or comment.author == BOT_NAME:
@@ -262,18 +285,18 @@ def main(debug=False):
         except KeyboardInterrupt:
             print("Keyboard Interrupt. Terminating...")
             break
-        except praw.exceptions.RedditAPIException as e:
-            print(f"RedditAPIException: {e}")
+        except praw.exceptions.RedditAPIException:
+            print(f"RedditAPIException: {traceback.format_exc()}")
             if not debug:
-                notify_author(e)
-        except praw.exceptions.PRAWException as e:
-            print(f"PRAWException: {e}")
+                notify_author(traceback.format_exc())
+        except praw.exceptions.PRAWException:
+            print(f"PRAWException: {traceback.format_exc()}")
             if not debug:
-                notify_author(e)
-        except Exception as e:
-            print(f"Unhandled exception: {e}")
+                notify_author(traceback.format_exc())
+        except Exception:
+            print(f"Unhandled exception: {traceback.format_exc()}")
             if not debug:
-                notify_author(e)
+                notify_author(traceback.format_exc())
         finally:
             print("------------------------")
             print(f"Replied comments so far: {comments_replied}")

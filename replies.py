@@ -32,7 +32,7 @@ REPLIES = {
     },
     "pain peko": {
         "messages": ["[pain-peko.](https://preview.redd.it/dvk3bft2a9l51.jpg?auto=webp&s=d5e53605dc0e99ed55884fc00c9b965c7dd38e7c)"],
-        "triggers": ["pain", "pain.", "pain...", "pain peko"],
+        "triggers": ["pain",  "pain.", "pain...", "pain peko"],
         "trigger_type": "any",
         "chance": 50,
         "exact": True,
@@ -41,7 +41,7 @@ REPLIES = {
     "limit reached": {
         "messages": ["Sorry, but I can't pekofy it any further to prevent spam peko. Thank you for your understanding peko."],
         "triggers": [],  # will be evaluated run-time
-        "trigger_type": "all",
+        "trigger_type": "any",
         "chance": 100,
         "exact": False,
         "include_bot": False,
@@ -57,7 +57,7 @@ REPLIES = {
     "no": {
         "messages": "[no](https://www.youtube.com/watch?v=3FOe-KNUwb4)",
         "triggers": [],  # will be evaluated run-time
-        "trigger_type": "all",
+        "trigger_type": "any",
         "chance": 100,
         "exact": False,
         "include_bot": False,
@@ -89,7 +89,7 @@ REPLIES = {
            "ばかたれが！", "あんたはバカなの？", "ぺっ", "Go peko yourself!",
            "[Disgusting.](https://streamable.com/6ntf2g)"],
         "triggers": ["insult me peko"],
-        "trigger_type": "all",
+        "trigger_type": "any",
         "chance": 100,
         "exact": False,
         "include_bot": False,
@@ -98,7 +98,7 @@ REPLIES = {
         "messages":
             ["Thank you guys. Don't cheat on me, okay? [Peko~](https://streamable.com/8gagri)",
             "[Love you](https://streamable.com/dbzfxj) too peko!", "I love you too peko!", "Love you too peko~"],
-        "triggers": ["love you","すき","好き"],
+        "triggers": ["love you","すき","好き", "love this bot"],
         "trigger_type": "any",
         "chance": 100,
         "exact": False,
@@ -107,8 +107,8 @@ REPLIES = {
     "cute": {
         "messages":
             ["You're cute too peko!", "You're also cute peko!", "You're cute too peko~", "You're also cute peko~", "Ehehe", "あなたもかわいいぺこ！"],
-        "triggers": ["cute"],
-        "trigger_type": "all",
+        "triggers": ["cute","kawaii"],
+        "trigger_type": "any",
         "include_bot": True,
         "chance": 100,
         "exact": False,
@@ -136,7 +136,7 @@ REPLIES = {
     "pekofy": {
         "messages": [],  # will be evaluated run-time
         "triggers": ["!pekofy"],
-        "trigger_type": "all",
+        "trigger_type": "any",
         "chance": 100,
         "exact": False,
         "include_bot": False,
@@ -144,7 +144,7 @@ REPLIES = {
     "unpekofy": {
         "messages": [],  # will be evaluated run-time
         "triggers": ["!unpekofy"],
-        "trigger_type": "all",
+        "trigger_type": "any",
         "chance": 100,
         "exact": False,
         "include_bot": False,
