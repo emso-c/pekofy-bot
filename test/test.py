@@ -9,8 +9,7 @@ from main import (
     notify_author,
     passed_limit,
     reply_f,
-    BOT_NAME,
-    praw
+    praw,
 )
 import main
 from auth import REDDIT
@@ -18,6 +17,7 @@ from auth import REDDIT
 class TestMain(unittest.TestCase):
 
     def setUp(self):
+        main.logger.disabled = True
         main.BOT_NAME = "pekofy_bot"
 
     def tearDown(self):

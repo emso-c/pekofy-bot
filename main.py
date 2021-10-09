@@ -3,6 +3,9 @@ import random
 from datetime import datetime
 import argparse
 import traceback
+import logging
+from logging import Formatter
+from logging.handlers import TimedRotatingFileHandler
 
 import praw
 
@@ -10,16 +13,28 @@ from pekofy import pekofy
 from auth import REDDIT, BOT_NAME, AUTHOR
 from replies import REPLIES
 
+logger = logging.getLogger(__name__)
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+handler = TimedRotatingFileHandler(filename='logs/pekolog.log', when='D', interval=1, backupCount=30, encoding='utf-8', delay=False)
+formatter = Formatter(fmt=f"%(asctime)s:%(module)s[%(lineno)d]:%(levelname)s: %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+
+# for some reason it doesn't print the log output to the console if I delete this, help
+logging.info(str)
 
 SUBREDDIT_LIST = ['u_' + BOT_NAME, 'u_' + AUTHOR, 'hololive', 'VirtualYoutubers', 'Hololewd', 'okbuddyhololive',
                   'goodanimemes', 'VtuberV8', 'Priconne', 'AmeliaWatson', 'GawrGura']
 SUBREDDIT = REDDIT.subreddit('+'.join(SUBREDDIT_LIST))
 
 # used for exponential back off in case reddit server is unable to respond
-INITIAL_WAIT_TIME = 10
+INITIAL_WAIT_TIME = 5
 MAX_WAIT_TIME = 600
 RESET_LIMIT = 50
 
+comments_replied, comments_scanned = 0, 0
 
 def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
     """
@@ -38,6 +53,7 @@ def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
 
     REPLIES["pekofy"]["messages"] = []
     if pekofy_msg:
+        logger.debug(f"{pekofy_msg=}")
         REPLIES["pekofy"]["messages"] = [pekofy_msg]
         if is_triggering(pekofy_msg, "nothing changed"):
             reply = "nothing changed"
@@ -54,15 +70,14 @@ def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
         global comments_replied
         comments_replied += 1
     except Exception:
-        print(f"Couldn't reply: {traceback.format_exc()}")
+        logger.error(f"Couldn't reply: {traceback.format_exc()}")
         if not debug:
             notify_author(traceback.format_exc(), comment_obj, message)
-    print(f"{reply}: https://www.reddit.com{comment_obj.permalink}")
-    print(f"Reply: {message}")
-    print("------------------------")
+    logger.debug(f"{reply}: https://www.reddit.com{comment_obj.permalink}")
+    logger.debug(f"Reply: {message}")
 
 
-def already_replied_to(comment, reply_type, verbose=True):
+def already_replied_to(comment, reply_type):
     """ returns if already replied the same type of comment or not """
     
     second_refresh = False
@@ -71,8 +86,10 @@ def already_replied_to(comment, reply_type, verbose=True):
           comment.refresh()
           break
       except praw.exceptions.ClientException: # work around as stated in the praw issue 838
+          logger.error(f"Comments didn't load, trying again...")
           if second_refresh:
-              return False
+              logger.error("Couldn't load comments, assuming already replied")
+              return True
           time.sleep(10)
           second_refresh = True
     comment.replies.replace_more()
@@ -94,9 +111,8 @@ def already_replied_to(comment, reply_type, verbose=True):
             break
         if top_comment.author == BOT_NAME:
             if top_comment.body in REPLIES[reply_type]["messages"]:
-                if verbose:
-                    print(f"Already {reply_type}'d: {top_comment.body} \ncontinuing...")
-                    print("------------------------")
+                logger.warning(f"Already replied ({reply_type}): {top_comment.body}")
+                logger.debug(f"https://www.reddit.com{top_comment.permalink}")
                 return True
     return False
 
@@ -113,8 +129,9 @@ def notify_author(exception, comment=None, tried_reply=None):
         body = f'{BOT_NAME} has run into an error: {exception}\n'
     try:
         REDDIT.redditor(AUTHOR).message(title, body)
+        logger.info(f"Notified author")
     except Exception:
-        print("Couldn't notify the author")
+        logger.critical("Couldn't notify the author")
 
 
 def is_triggering(text, reply):
@@ -129,9 +146,13 @@ def is_triggering(text, reply):
             trigger, text, REPLIES[reply]["exact"]
         ) for trigger in REPLIES[reply]["triggers"]]
 
+    condition = any(conditions)
     if REPLIES[reply]["trigger_type"] == "all":
-        return all(conditions)
-    return any(conditions)
+        condition = all(conditions)
+
+    if condition:
+        logger.info(f"Trigger found ({reply}): {text}")
+    return condition
 
 
 def passed_limit(comment, limit=2):
@@ -149,6 +170,8 @@ def passed_limit(comment, limit=2):
             if comment.parent().author and is_triggering(comment.parent().body, "pekofy"):
                 comment = comment.parent()
                 current_usage += 1
+    if current_usage == limit:
+        logger.warning(f"Reached limit ({limit}): https://www.reddit.com{comment.permalink} ({comment})")
     return current_usage == limit
 
 
@@ -177,16 +200,19 @@ def is_anti(comment):
         else:
             break
     
+    if score_sum < -1:
+        logger.info(f"Possible anti found: https://www.reddit.com{comment.permalink}, score was {score_sum}")
     return score_sum < -1
 
 
-comments_replied, comments_scanned = 0, 0
 
 def main(debug=False):
     global comments_replied, comments_scanned
     current_wait_time = INITIAL_WAIT_TIME
 
-    print(f"Debug mode is {'ON' if debug else 'OFF'}")
+    logger.info(f"Debug mode is {'ON' if debug else 'OFF'}")
+
+    # giving time to cancel in case accidentally running the program without debug option
     if not debug:
         for i in range(5, -1,-1):
             time.sleep(1)
@@ -199,21 +225,24 @@ def main(debug=False):
             for comment in SUBREDDIT.stream.comments():
                 comments_scanned += 1
 
-                if comment.body == "Cute bot":
-                    print(comment, comment.body)
-
-                # comment has been deleted or it's author is the bot itself
-                if not comment.author or comment.author == BOT_NAME:
+                # comment author is the bot itself
+                if comment.author == BOT_NAME:
                     continue
+                
+                # comment has been deleted
+                if not comment.author:
+                    logger.warning(f"Comment has been deleted: https://www.reddit.com{comment.permalink}")
+                    continue
+
 
                 # check for pain peko reply
                 if is_triggering(comment.body.lower(), "pain peko"):
-                    reply_f("pain peko", comment, debug)
+                    reply_f("pain peko", comment, debug=debug)
 
                 # check for hey moona reply
                 if len(comment.body)<350:  # longer messages tend to be more serious, don't "hey moona"
                     if is_triggering(comment.body.lower(), "hey moona"):
-                        reply_f("hey moona", comment, debug)
+                        reply_f("hey moona", comment, debug=debug)
 
                 # feedback gratitude
                 replied = False
@@ -221,7 +250,7 @@ def main(debug=False):
                     if comment.parent().author and comment.parent().author.name == BOT_NAME:
                         for feedback in ["love", "cute", "thank", "sorry", "insult"]:
                             if is_triggering(comment.body.lower(), feedback):
-                                reply_f(feedback, comment, debug)
+                                reply_f(feedback, comment, debug=debug)
                                 replied = True
                                 break
                 if replied:
@@ -229,7 +258,7 @@ def main(debug=False):
 
                 # both pekofy and unpekofy written
                 if is_triggering(comment.body, "confused"):
-                    reply_f("confused", comment, debug)
+                    reply_f("confused", comment, debug=debug)
                     continue
 
                 # if keyword found, try to pekofy
@@ -241,18 +270,18 @@ def main(debug=False):
 
                     # parent is a post, pekofy accordingly
                     if is_top_level(comment):
-                        reply_f("pekofy", comment, pekofy(
+                        reply_f("pekofy", comment, debug=debug, pekofy_msg=pekofy(
                             comment.submission.title + '\n\n' + comment.submission.selftext if comment.submission.selftext else comment.submission.title))
                         continue
 
                     # someone tried to break it by recursive calling, kindly say no
                     if is_triggering(comment.parent().body, "pekofy"):
-                        reply_f("no", comment, debug)
+                        reply_f("no", comment, debug=debug)
                         continue
 
                     # someone tried to pekofy a good/bad bot reply, don't pekofy
                     if is_triggering(comment.parent().body.lower(), "bot score abuse"):
-                        reply_f("bot score abuse", comment, debug)
+                        reply_f("bot score abuse", comment, debug=debug)
                         continue
 
                     # don't pekofy if limit already reached before.
@@ -261,23 +290,23 @@ def main(debug=False):
 
                     # if the same sentence has been pekofied too much already, don't pekofy
                     if passed_limit(comment):
-                        reply_f("limit reached", comment, debug)
+                        reply_f("limit reached", comment, debug=debug)
                         continue
 
                     # not pekofy if anti/hater
                     if is_anti(comment):
-                        reply_f("no", comment, debug)
+                        reply_f("no", comment, debug=debug)
                         continue
 
                     # try to reply to the comment
-                    reply_f("pekofy", comment, pekofy(comment.parent().body))
+                    reply_f("pekofy", comment, pekofy_msg=pekofy(comment.parent().body), debug=debug)
 
                 # delete keyphrase found
                 if is_triggering(comment.body, "unpekofy") and comment.parent().author == BOT_NAME and comment.parent().body:
                     if comment.parent().score < -1:
-                        print(f'Unpekofied: {comment.parent().body}')
                         comment.parent().delete()
-                        print("------------------------")
+                        logger.info(f'Unpekofied: https://www.reddit.com{comment.parent().permalink}')
+                        logger.info(f'Parent: https://www.reddit.com{comment.parent().parent().permalink}')
 
                 # More than `reset_limit` comments has been scanned without an incident, reset wait time.
                 if comments_scanned % RESET_LIMIT == 0:
@@ -286,26 +315,26 @@ def main(debug=False):
             print("Keyboard Interrupt. Terminating...")
             break
         except praw.exceptions.RedditAPIException:
-            print(f"RedditAPIException: {traceback.format_exc()}")
+            logger.error(f"RedditAPIException: {traceback.format_exc()}")
             if not debug:
                 notify_author(traceback.format_exc())
         except praw.exceptions.PRAWException:
-            print(f"PRAWException: {traceback.format_exc()}")
+            logger.error(f"PRAWException: {traceback.format_exc()}")
             if not debug:
                 notify_author(traceback.format_exc())
         except Exception:
-            print(f"Unhandled exception: {traceback.format_exc()}")
+            logger.error(f"Unhandled exception: {traceback.format_exc()}")
             if not debug:
                 notify_author(traceback.format_exc())
         finally:
-            print("------------------------")
-            print(f"Replied comments so far: {comments_replied}")
-            print(f"Scanned comments so far: {comments_scanned}")
+            logger.info(f"Replied comments so far: {comments_replied}")
+            logger.info(f"Scanned comments so far: {comments_scanned}")
             comments_replied, comments_scanned = 0, 0
 
             # not-so-exponential back off
             time.sleep(current_wait_time)
             if not current_wait_time > MAX_WAIT_TIME:
+                logger.info(f"Increasing wait time from {current_wait_time} to {current_wait_time*2}")
                 current_wait_time *= 2
 
 if __name__ == "__main__":
@@ -313,4 +342,5 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true', help='turn debug mode on')
     args = parser.parse_args()
 
+    logger.info("Starting session ----------------------------------------------------")
     main(debug=args.debug)
