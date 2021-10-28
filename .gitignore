@@ -1,5 +1,5 @@
 credentials.py
-*.log
+*.log*
 
 # Environments
 .env
