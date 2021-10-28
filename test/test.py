@@ -1,3 +1,5 @@
+### WIP ###
+
 #NOTE: Signing in to a reddit account is necessary to run all tests (see auth.py)
 import unittest
 from unittest.case import skipIf
@@ -61,13 +63,13 @@ class TestMain(unittest.TestCase):
         
         ### pekofy ###
         # comment
-        self.assertTrue(already_replied_to(comment(REDDIT, "hf8ump4"), "pekofy", False))
+        self.assertTrue(already_replied_to(comment(REDDIT, "hf8ump4"), "pekofy"))
         # comment (command and reply are both edited)
-        self.assertFalse(already_replied_to(comment(REDDIT, "hb6x17z"), "pekofy", False))
+        self.assertFalse(already_replied_to(comment(REDDIT, "hb6x17z"), "pekofy"))
         # top level comment
-        self.assertTrue(already_replied_to(comment(REDDIT, "hff0et8"), "pekofy", False))
+        self.assertTrue(already_replied_to(comment(REDDIT, "hff0et8"), "pekofy"))
         # top level comment (command edited)
-        self.assertTrue(already_replied_to(comment(REDDIT, "hfcb87u"), "pekofy", False))
+        self.assertTrue(already_replied_to(comment(REDDIT, "hfcb87u"), "pekofy"))
 
         ### unpekofy ###
         # there are no replies to unpekofy command
@@ -78,7 +80,7 @@ class TestMain(unittest.TestCase):
         
 
         ### cute ###
-        self.assertTrue(already_replied_to(comment(REDDIT, "hb89b9c"), "cute", False))
+        self.assertTrue(already_replied_to(comment(REDDIT, "hb89b9c"), "cute"))
 
         ### love ###
 
