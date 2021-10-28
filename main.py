@@ -53,7 +53,6 @@ def reply_f(reply, comment_obj, pekofy_msg=None, debug=False):
 
     REPLIES["pekofy"]["messages"] = []
     if pekofy_msg:
-        logger.debug(f"pekofy_msg={pekofy_msg}")
         REPLIES["pekofy"]["messages"] = [pekofy_msg]
         if is_triggering(pekofy_msg, "nothing changed"):
             reply = "nothing changed"

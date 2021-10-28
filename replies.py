@@ -55,7 +55,7 @@ REPLIES = {
         "include_bot": False,
     },
     "no": {
-        "messages": "[no](https://www.youtube.com/watch?v=3FOe-KNUwb4)",
+        "messages": ["[no](https://www.youtube.com/watch?v=3FOe-KNUwb4)"],
         "triggers": [],  # will be evaluated run-time
         "trigger_type": "any",
         "chance": 100,
