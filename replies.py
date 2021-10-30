@@ -126,7 +126,9 @@ REPLIES = {
                 "wao wao waoo!":"https://www.youtube.com/watch?v=O9s_HLql2YM",
                 "pardun?":"https://www.youtube.com/watch?v=a3DpRlWdnDw",
                 "holy sheet":"https://www.youtube.com/watch?v=yo0_m34o6Mg",
-                "motherf*cker": "https://www.youtube.com/watch?v=4q1B06m4_Lk" # Korone roll
+                "motherf*cker": "https://www.youtube.com/watch?v=4q1B06m4_Lk", # Korone roll
+                "god bless you": "https://streamable.com/1w8pbx",
+                "hi honey": "https://www.youtube.com/watch?v=n8psYwqS544"
             }.items()],
         "triggers": ["NOTHING_CHANGED", "NO_LETTER"],
         "trigger_type": "any",
