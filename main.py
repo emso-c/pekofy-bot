@@ -203,6 +203,9 @@ def is_anti(comment):
         logger.info(f"Possible anti found: https://www.reddit.com{comment.permalink}, score was {score_sum}")
     return score_sum < -1
 
+def is_between_timespan(timespan:tuple) -> bool:
+    """Returns if current time is between given timespans"""
+    return timespan[0] <= datetime.now() <= timespan[1]
 
 
 def main(debug=False):
@@ -243,10 +246,22 @@ def main(debug=False):
                     if is_triggering(comment.body.lower(), "hey moona"):
                         reply_f("hey moona", comment, debug=debug)
 
-                # feedback gratitude
                 replied = False
                 if not is_top_level(comment):
                     if comment.parent().author and comment.parent().author.name == BOT_NAME:
+                        # limited time reply
+                        CHRISTMAS=(
+                            datetime(int(datetime.now().strftime("%Y")), 12, 25-1),
+                            datetime(int(datetime.now().strftime("%Y"))+1, 1, 5+1)
+                        )
+                        if is_between_timespan(CHRISTMAS):
+                            print("IS BETWEEN TIMESPAN")
+                            if is_triggering(comment.body.lower(), "merry christmas"):
+                                print("IS TRIGGERING")
+                                reply_f("merry christmas", comment, debug=debug)
+                                continue
+
+                        # feedback gratitude
                         for feedback in ["love", "cute", "thank", "sorry", "insult"]:
                             if is_triggering(comment.body.lower(), feedback):
                                 reply_f(feedback, comment, debug=debug)
