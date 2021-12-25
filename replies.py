@@ -152,4 +152,12 @@ REPLIES = {
         "exact": False,
         "include_bot": False,
     },
+    "merry christmas": {
+        "messages": ["Merry christmas [peko!](https://www.youtube.com/watch?v=v4jHHWdPiCM)", "Merry christmas [peko~](https://www.youtube.com/watch?v=v4jHHWdPiCM)", "Merry christmas peko!", "Merry christmas peko~", "メリークリスマスぺこ～"],
+        "triggers": ["merry christmas"],
+        "trigger_type": "any",
+        "chance": 100,
+        "exact": False,
+        "include_bot": False,
+    }
 }
