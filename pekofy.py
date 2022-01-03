@@ -43,9 +43,9 @@ def pekofy(input_text):
     for match in punctuation_pattern.finditer(new_text):
         i = match.start() + offset # match point
         last_word = regex.search(r'[^\W_]', new_text[i::-1]) # find the nearest alphanumeric behind match point
-        if is_decimal_number(new_text, i, last_word.group()):
-            continue
         try:
+            if is_decimal_number(new_text, i last_word.group()):
+                continue
             j = i - last_word.start() + 1 # index to insert keyword
 
             if is_japanese(last_word.group()):
