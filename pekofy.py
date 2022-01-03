@@ -44,7 +44,7 @@ def pekofy(input_text):
         i = match.start() + offset # match point
         last_word = regex.search(r'[^\W_]', new_text[i::-1]) # find the nearest alphanumeric behind match point
         try:
-            if is_decimal_number(new_text, i last_word.group()):
+            if is_decimal_number(new_text, i, last_word.group()):
                 continue
             j = i - last_word.start() + 1 # index to insert keyword
 
