@@ -43,6 +43,8 @@ def pekofy(input_text):
     for match in punctuation_pattern.finditer(new_text):
         i = match.start() + offset # match point
         last_word = regex.search(r'[^\W_]', new_text[i::-1]) # find the nearest alphanumeric behind match point
+        if is_decimal_number(new_text, i, last_word.group()):
+            continue
         try:
             j = i - last_word.start() + 1 # index to insert keyword
 
@@ -77,3 +79,13 @@ def pekofy(input_text):
     new_text = profanity.censor(new_text, censor_char='\*', middle_only=True)
     
     return new_text
+
+# Checks if the match is a decimal number
+def is_decimal_number(text, index_with_offset, last_word):
+    index_after = index_with_offset + 1
+    # Guard to check if the previous char is a digit and whether this is the end of a sentence
+    if not last_word.isdigit() or index_after >= len(text):
+        return False
+    if text[index_after].isdigit():
+        return True
+    return False
