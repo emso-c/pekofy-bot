@@ -260,7 +260,7 @@ def main(debug=False):
                                 continue
 
                         # feedback gratitude
-                        for feedback in ["love", "cute", "thank", "sorry", "insult"]:
+                        for feedback in ["love", "cute", "thank", "sorry", "insult", "marry"]:
                             if is_triggering(comment.body.lower(), feedback):
                                 reply_f(feedback, comment, debug=debug)
                                 replied = True

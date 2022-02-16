@@ -159,5 +159,16 @@ REPLIES = {
         "chance": 100,
         "exact": False,
         "include_bot": False,
+    },
+    "marry": {
+        "messages": ["Thank you, but I cant. I'm everyone's idol, peko~", 
+                    "I bet you tell this to all bots, baka peko!",
+                    "https://www.youtube.com/watch?v=3FOe-KNUwb4",
+                    "HA↑HA↓HA↑HA↓HA↑HA↓HA↑HA↓HA↑HA↓HA↑HA↓HA↑HA↓HA↑HA↓"],
+        "triggers": ["marry me", "marry me peko", "marry me!", "marry me peko!"],
+        "trigger_type": "any",
+        "chance": 100,
+        "exact": False,
+        "include_bot": False
     }
 }
