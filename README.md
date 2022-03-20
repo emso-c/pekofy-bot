@@ -8,3 +8,5 @@ Get more info about the bot here: https://www.reddit.com/user/pekofy_bot/comment
 FAQ: https://www.reddit.com/user/pekofy_bot/comments/lhrzl1/faq_peko/
 
 Change log: https://www.reddit.com/user/pekofy_bot/comments/ldzhkq/change_log_peko/
+
+###### Social preview art by [Zephyリン](https://twitter.com/ZeroRespect_BOT)
