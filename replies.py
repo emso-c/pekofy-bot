@@ -159,5 +159,25 @@ REPLIES = {
         "chance": 100,
         "exact": False,
         "include_bot": False,
+    },
+    "pekora copypasta": {
+        "messages": [
+            "I refuse peko.",
+            "No way I'm pekofying that peko.",
+            "[No.](https://www.youtube.com/watch?v=3FOe-KNUwb4)",
+        ],
+        "triggers": [
+            "So as a joke, I went to my friend's house wearing Pekora's wig and clothes.",
+            "way he stared made me",
+            "what seemed like forever",
+            "expected him to scream",
+            "it got stuck inside my throat no matter how hard",
+            "he still looked so cute all confused like that",
+            "Let's just pretend I'm still Pekora."    
+        ],
+        "trigger_type": "all",
+        "chance": 100,
+        "exact": False,
+        "include_bot": False,
     }
 }
