@@ -4,10 +4,8 @@ from pekofy import pekofy
 from enum import Enum
 
 def test_for(test_cases:list[Tuple]) -> Tuple[str, str]:
-    for tt in test_cases:
-        text, expected = tt
-        result = pekofy(text)
-        yield result, expected
+    for text, expected in test_cases:
+        yield pekofy(text), expected
 
 class TestPekofy(unittest.TestCase):
     def setUp(self):
